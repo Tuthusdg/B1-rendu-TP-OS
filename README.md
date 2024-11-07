@@ -827,6 +827,7 @@ PS C:\Users\arthu> (Get-WmiObject -Class Win32_LogonSession | Where-Object { $_.
 20241029231702.752745+060
 
 ```
+Lister les processus en cours d'execution
 
 ```powershell
 PS C:\Users\arthu> Get-WmiObject -Class Win32_Process | ForEach-Object {
@@ -1142,3 +1143,107 @@ svchost.exe                     16668 \
 WmiPrvSE.exe                    17440 \
 
 ```
+
+### 6.random
+
+date et heure d'allumage
+
+```powershell
+PS C:\Users\arthu> (Get-CimInstance -ClassName Win32_OperatingSystem).LastBootUpTime
+
+mardi 29 octobre 2024 23:15:46
+```
+
+Device
+```powershell
+PS C:\Users\arthu> Get-CimInstance -ClassName Win32_Processor | Select-Object -Property Name
+
+Name
+----
+11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz
+```
+
+Version
+```powershell
+PS C:\Users\arthu> Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -Property Caption, Version
+
+Caption                      Version
+-------                      -------
+Microsoft Windows 11 Famille 10.0.22631
+```
+
+mise à jour
+```powershell
+PS C:\Users\arthu> Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object -Property InstallDate
+
+InstallDate
+-----------
+23/06/2024 04:25:53
+
+
+LocalAddress  : 192.168.1.147
+LocalPort     : 28252
+RemoteAddress : 192.168.1.162
+RemotePort    : 36354
+State         : Established
+OwningProcess : 4964
+```
+
+### 7.Petit amusement 
+
+```powershell
+
+PS C:\Users\arthu> Get-Process -Id 4964 | Select-Object -Property Name, Id, Path
+
+Name     Id Path
+----     -- ----
+steam 17352 D:\steam\steam.exe
+
+PS C:\Users\arthu> Get-Process -Id 17352 | Select-Object -Property Name, Id, WorkingSet
+
+Name     Id WorkingSet
+----     -- ----------
+steam 17352   74391552
+
+PS C:\WINDOWS\system32> $id = 17352
+>> (Get-WmiObject -Class Win32_Process -Filter "ProcessId=$id").GetOwner() | ForEach-Object {
+>>     [PSCustomObject]@{
+>>         ProcessName = (Get-Process -Id $id).ProcessName
+>>         ProcessId   = $id
+>>         UserName    = "$($_.Domain)\$($_.User)"
+>>     }
+>> }
+
+ProcessName ProcessId UserName
+----------- --------- --------
+steam           17352 LAPTOP-B7G8NR8E\arthu
+
+PS C:\WINDOWS\system32> $Id = 17352
+>> $fileOwner = (Get-Acl ((Get-WmiObject Win32_Process -Filter "ProcessId=$Id").ExecutablePath)).Owner
+>> Write-Output "Propriétaire du fichier : $fileOwner"
+>>
+Propriétaire du fichier : LAPTOP-B7G8NR8E\arthu
+```
+
+Ping 
+
+google (car amazon ne marchait pas)
+```powershell
+
+PS C:\WINDOWS\system32> ping 8.8.8.8
+
+Envoi d’une requête 'Ping'  8.8.8.8 avec 32 octets de données :
+Réponse de 8.8.8.8 : octets=32 temps=14 ms TTL=119
+Réponse de 8.8.8.8 : octets=32 temps=11 ms TTL=119
+Réponse de 8.8.8.8 : octets=32 temps=14 ms TTL=119
+Réponse de 8.8.8.8 : octets=32 temps=13 ms TTL=119
+
+Statistiques Ping pour 8.8.8.8:
+    Paquets : envoyés = 4, reçus = 4, perdus = 0 (perte 0%),
+Durée approximative des boucles en millisecondes :
+    Minimum = 11ms, Maximum = 14ms, Moyenne = 13ms
+```
+
+
+
+
