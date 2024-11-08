@@ -437,3 +437,12 @@ unuser@TPOS:~/Downloads/dawa$ find ~/Downloads/dawa/ -name "cookie"
 unuser@TPOS:~/Downloads/dawa$ find ~/Downloads/dawa/ -name ".*"
 /home/unuser/Downloads/dawa/folder32/14/.hidden_file
 ```
+```bash
+unuser@TPOS:~/Downloads/dawa$ find ~/Downloads/dawa/ -type f -ls | grep " 2014"
+   433529      4 -rw-r--r--   1 unuser   unuser         16 Jan 21  2014 /home/unuser/Downloads/dawa/folder36/40/file43
+```
+
+```bash
+unuser@TPOS:~/Downloads/dawa/folder32$ find ~/Downloads/dawa/ -type f | grep "dawa/.*/.*/.*/.*/.*"
+/home/unuser/Downloads/dawa/folder37/45/23/43/54/file43
+```
