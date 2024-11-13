@@ -347,3 +347,101 @@ unuser@TPOS:~$ systemctl status ssh
              └─598 "sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups"
 ```
 
+```bash
+unuser@TPOS:~$ sudo ss -lntp | grep ssh
+[sudo] password for unuser:
+LISTEN 0      128          0.0.0.0:22        0.0.0.0:*    users:(("sshd",pid=598,fd=3))
+LISTEN 0      128             [::]:22           [::]:*    users:(("sshd",pid=598,fd=4))
+```
+on voit sur la 3 eme colonne le fameux 22
+
+
+```bash
+unuser@TPOS:~$ sudo journalctl -u ssh
+```
+
+### 3.Modification du service
+
+#### A. configuration du service ssh
+
+```bash
+unuser@TPOS:~$ ls -l /etc/ssh/
+total 604
+-rw-r--r-- 1 root root 573928 Jun 22 21:38 moduli
+-rw-r--r-- 1 root root   1650 Jun 22 21:38 ssh_config
+drwxr-xr-x 2 root root   4096 Jun 22 21:38 ssh_config.d
+-rw-r--r-- 1 root root   3223 Jun 22 21:38 sshd_config
+drwxr-xr-x 2 root root   4096 Jun 22 21:38 sshd_config.d
+-rw------- 1 root root    505 Nov  6 11:49 ssh_host_ecdsa_key
+-rw-r--r-- 1 root root    171 Nov  6 11:49 ssh_host_ecdsa_key.pub
+-rw------- 1 root root    399 Nov  6 11:49 ssh_host_ed25519_key
+-rw-r--r-- 1 root root     91 Nov  6 11:49 ssh_host_ed25519_key.pub
+-rw------- 1 root root   2590 Nov  6 11:49 ssh_host_rsa_key
+-rw-r--r-- 1 root root    563 Nov  6 11:49 ssh_host_rsa_key.pub
+```     
+
+```bash
+unuser@TPOS:~$ echo $RANDOM
+18105
+```
+
+```bash
+unuser@TPOS:~$ cat /etc/ssh/sshd_config | grep "Port"
+Port 18105
+```
+
+```bash
+unuser@TPOS:~$ cat /etc/ssh/sshd_config | grep PermitRootLogin
+PermitRootLogin no
+```
+
+on peut aussi interdire de ne pas mettre de mot passe pour un nouvelle utilisateur
+ou mettre un nbr de tentative max
+
+#### B.Le service en lui même
+
+```bash
+unuser@TPOS:~$ sudo find / -name 'ssh.service' -type f
+/usr/lib/systemd/system/ssh.service
+```
+
+```bash
+unuser@TPOS:/usr/lib/systemd/system$ cat ssh.service | grep ExecStart=
+ExecStart=/usr/sbin/sshd -D $SSHD_OPTS
+```
+
+### 4. créer votre propre configuration 
+
+```bash
+unuser@TPOS:/$ sudo find / -name "python3"
+/usr/share/doc/python3
+/usr/share/lintian/overrides/python3
+/usr/share/bash-completion/completions/python3
+/usr/share/python3
+/usr/lib/python3
+/usr/bin/python3
+/etc/python3
+```
+
+le dossier est dans usr/bin/
+
+```bash
+unuser@TPOS:/$ ps -ef | grep python | head -1
+root        2442       1  0 11:23 ?        00:00:00 /usr/bin/python3 -m http.server 8888
+```
+son id est donc 2442
+
+
+
+```bash
+unuser@TPOS:/$ sudo ss -lntp | grep python
+LISTEN 0      5            0.0.0.0:8888      0.0.0.0:*    users:(("python3",pid=2442,fd=3))
+```
+
+on voit bien l'apparition du port 8888
+
+
+```bash
+unuser@TPOS:/$ sudo systemctl enable meow_web.service
+Created symlink /etc/systemd/system/multi-user.target.wants/meow_web.service → /etc/systemd/system/meow_web.service.
+```
