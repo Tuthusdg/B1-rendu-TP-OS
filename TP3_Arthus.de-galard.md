@@ -235,4 +235,75 @@ imnotbobsorry is not in the sudoers file.
 ```
 
 ```bash
+imnotbobsorry@TPOS:~$ pwd
+/home/badguy
+
+imnotbobsorry@TPOS:~$ sudo apt update
+[sudo] password for imnotbobsorry:
+Hit:1 http://security.debian.org/debian-security bookworm-security InRelease
+Hit:2 http://deb.debian.org/debian bookworm InRelease
+Get:3 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Fetched 55.4 kB in 1s (82.5 kB/s)
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+66 packages can be upgraded. Run 'apt list --upgradable' to see them.
+```
+
+
+## Partie II  
+### 1.Jouer avec la commande ps 
+```bash
+unuser@TPOS:~$ ps |grep bash
+    737 pts/0    00:00:00 bash
+```
+
+
+```bash
+unuser@TPOS:~$ ps -ef | grep "unuser   "
+unuser       711       1  0 07:53 ?        00:00:00 /lib/systemd/systemd --user
+unuser       712     711  0 07:53 ?        00:00:00 (sd-pam)
+unuser       729     711  0 07:53 ?        00:00:00 /usr/bin/pulseaudio --daemonize=no --log-target=journal
+unuser       732     708  0 07:53 ?        00:00:00 sshd: unuser@pts/0
+unuser       737     732  0 07:53 pts/0    00:00:00 -bash
+unuser       785     711  0 07:53 ?        00:00:00 /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+unuser      1057     737  0 07:59 pts/0    00:00:00 ps -ef
+unuser      1058     737  0 07:59 pts/0    00:00:00 grep unuser
+```
+
+```bash
+unuser@TPOS:~$ ps aux --sort -%mem |head -5
+USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+lightdm      656  0.1 11.7 616220 115368 ?       Ssl  07:53   0:00 /usr/sbin/lightdm-gtk-greeter
+root         603  0.1  7.7 353528 76196 tty7     Ssl+ 07:53   0:00 /usr/lib/xorg/Xorg :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+root         216  0.0  2.3  65848 23472 ?        Ss   07:53   0:00 /lib/systemd/systemd-journald
+root         442  0.0  2.1 258468 21440 ?        Ssl  07:53   0:00 /usr/sbin/NetworkManager --no-daemon
+```
+
+```bash
+unuser@TPOS:~$ ps -ef --sort -pid | grep sshd | tail -1
+root         598       1  0 07:53 ?        00:00:00 sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups
+```
+
+```bash
+unuser@TPOS:~$ ps -ef --sort -pid | tail -1
+root           1       0  0 07:52 ?        00:00:00 /sbin/init
+```
+
+### 2.Parent, enfant et meurtre
+
+```bash
+unuser@TPOS:~$ ps -ef | grep "bash   "
+unuser      1093     737  0 08:10 pts/0    00:00:00 grep bash
+```
+
+```bash
+unuser@TPOS:~$ ps -ef --sort -pid | grep bash | tail -1
+unuser       737     732  0 07:53 pts/0    00:00:00 -bash
+```
+
+le ppid de mon terminal est donc 732
+
+```bash
+
 ```
