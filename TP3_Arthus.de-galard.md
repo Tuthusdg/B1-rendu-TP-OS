@@ -305,5 +305,45 @@ unuser       737     732  0 07:53 pts/0    00:00:00 -bash
 le ppid de mon terminal est donc 732
 
 ```bash
-
+unuser@TPOS:~$ ps -p 732
+    PID TTY          TIME CMD
+    732 ?        00:00:00 sshd
 ```
+
+son nom est donc sshd
+
+```bash
+unuser@TPOS:~$ ps -ef | grep sleep | head -1
+unuser      1253     737  0 09:21 pts/0    00:00:00 sleep 999999
+```
+
+on voit que le ppid est 737 soit l'id du bash
+
+```bash
+unuser@TPOS:~$ ps -ef | grep sleep | head -1
+unuser      1253       1  0 09:21 ?        00:00:00 sleep 999999
+```
+
+Donc le processus est encore en cours d'execution
+
+
+## Partie III 
+
+### 2. analyser  un service existant
+
+```bash
+unuser@TPOS:~$ systemctl status ssh
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/lib/systemd/system/ssh.service; enabled; preset: enabled)
+     Active: active (running) since Wed 2024-11-13 07:53:04 CET; 2h 2min ago
+       Docs: man:sshd(8)
+             man:sshd_config(5)
+    Process: 588 ExecStartPre=/usr/sbin/sshd -t (code=exited, status=0/SUCCESS)
+   Main PID: 598 (sshd)
+      Tasks: 1 (limit: 1077)
+     Memory: 5.5M
+        CPU: 300ms
+     CGroup: /system.slice/ssh.service
+             └─598 "sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups"
+```
+
