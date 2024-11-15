@@ -43,4 +43,30 @@ tmpfs                50362     60  50302    1% /run/user/108
 ```
 
 ```bash
+unuser@deb:~$ du -h /boot/vmlinuz-6.1.0-27-amd64  && ls -i /boot/vmlinuz-6.1.0-27-amd64
+7.9M    /boot/vmlinuz-6.1.0-27-amd64
+260620 /boot/vmlinuz-6.1.0-27-amd64
+```
+
+```bash
+unuser@deb:~$ sudo find / -name "bash" -type f
+/etc/apparmor.d/abstractions/bash
+/usr/bin/bash
+/usr/share/menu/bash
+/usr/share/lintian/overrides/bash
+/usr/share/debianutils/shells.d/bash
+```
+
+on sait donc que bash se situe dans /usr/bin
+
+```bash
+unuser@deb:~$ du -h /usr/bin/bash && ls -i /usr/bin/bash
+1.3M    /usr/bin/bash
+131817 /usr/bin/bash
+```
+
+```bash
+unuser@deb:~$ du -h /etc/passwd && ls -i /etc/passwd
+4.0K    /etc/passwd
+146546 /etc/passwd
 ```
