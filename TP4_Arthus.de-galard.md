@@ -70,3 +70,6 @@ unuser@deb:~$ du -h /etc/passwd && ls -i /etc/passwd
 4.0K    /etc/passwd
 146546 /etc/passwd
 ```
+
+```bash
+```
